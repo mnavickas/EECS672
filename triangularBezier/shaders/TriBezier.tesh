@@ -1,0 +1,82 @@
+#version 410 core
+
+layout ( triangles ) in;
+
+// For a degree n triangular Bezier surface, you need (n+1)(n+2)/2 control
+// points. For now, we will support up to degree 6. The following global
+// buffer is used by the de Casteljau algorithm below.
+const int MAX_CONTROL_POINTS = 28;
+vec4 buf[MAX_CONTROL_POINTS];
+
+// For now, we assume:
+const int DEGREE = 3;
+
+in PVA
+{
+	vec4 diffuseRef;
+	vec3 unitNormal; // value ignored and replaced by code here
+} pva_in[];
+
+out PVA
+{
+	vec4 diffuseRef;
+	vec3 unitNormal;
+} pva_out;
+
+int skipToRow(in int degree, in int i)
+{
+	int skip = 0;
+	for (int r=0 ; r<i ; r++)
+		skip += degree + 1 - r;
+	return skip;
+}
+
+// following computes and returns the index in the control point array of
+// control point (i,j,k). We only pass i and j because k = degree - i - j.
+int loc(in int degree, in int i, in int j) // int k = degree - i - j
+{
+	return skipToRow(degree, i) + j;
+}
+
+void decasteljauStep(in int degree, inout vec4 theBuffer[MAX_CONTROL_POINTS],
+	in float u, in float v, in float w, out vec4 uPnt, out vec4 vPnt, out vec4 wPnt)
+{
+	int loweredDegree = degree - 1;
+	for (int i=0 ; i<=loweredDegree ; i++)
+		for (int j=0 ; j<=(loweredDegree-i) ; j++)
+		{
+			uPnt = theBuffer[loc(degree, i+1, j)];    // (i+1),j,k
+			vPnt = theBuffer[loc(degree, i, j+1)];    // i,(j+1),k
+			wPnt = theBuffer[loc(degree, i, j)  ];    // i,j,(k+1)
+			theBuffer[loc(loweredDegree, i, j)] = u*uPnt + v*vPnt + w*wPnt;
+		}
+}
+
+vec4 decasteljau(in int degree, in float u, in float v, in float w,
+	inout vec4 theBuffer[MAX_CONTROL_POINTS], out vec3 unitNormalVec)
+{
+	vec4 uPnt, vPnt, wPnt;
+	for (int d=degree ; d>0 ; d--)
+		decasteljauStep(d, theBuffer, u, v, w, uPnt, vPnt, wPnt);
+	// approximate the normal as the normal to the final triangle
+	vec3 C = uPnt.xyz/uPnt.w;
+	vec3 aLeg = wPnt.xyz/wPnt.w - C;
+	vec3 bLeg = vPnt.xyz/vPnt.w - C;
+	unitNormalVec = normalize(cross(aLeg, bLeg));
+	return theBuffer[0];
+}
+
+void main()
+{
+	for (int i=0 ; i<gl_in.length() ; i++)
+		buf[i] = gl_in[i].gl_Position;
+	//if (length(pva_in[0].unitNormal) >= 0.0) // See teshREADME.txt
+		gl_Position = decasteljau(DEGREE, gl_TessCoord.x, gl_TessCoord.y, gl_TessCoord.z,
+			buf, pva_out.unitNormal);
+
+	for (int i=0 ; i<gl_in.length() ; i++)
+		buf[i] = pva_in[i].diffuseRef;
+	vec3 unused;
+	pva_out.diffuseRef= decasteljau(DEGREE, gl_TessCoord.x, gl_TessCoord.y, gl_TessCoord.z,
+			buf, unused);
+}
