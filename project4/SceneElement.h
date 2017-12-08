@@ -40,6 +40,8 @@ public:
 protected:
 	ShaderIF* shaderIF;
 	PhongMaterial matl;
+	static bool toggleFire;
+
 
 private:
 	GLuint texID;

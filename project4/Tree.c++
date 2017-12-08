@@ -15,11 +15,11 @@ Tree::Tree(ShaderIF* sIF, float dx, float dy, float dz)
     addComponent(trunk);
 
 
-    addComponent(new RectangularPrism(sIF,PHONG_GRASS,50,10,10,dx,dy+40,dz));
-    addComponent(new RectangularPrism(sIF,PHONG_GRASS,40,25,25,dx,dy+40,dz));
+    addComponent(new RectangularPrism(sIF,PHONG_LEAVES,50,10,10,dx,dy+40,dz));
+    addComponent(new RectangularPrism(sIF,PHONG_LEAVES,40,25,25,dx,dy+40,dz));
 
-    addComponent(new RectangularPrism(sIF,PHONG_GRASS,10,10,50,dx,dy+40,dz));
-    addComponent(new RectangularPrism(sIF,PHONG_GRASS,25,25,40,dx,dy+40,dz));
+    addComponent(new RectangularPrism(sIF,PHONG_LEAVES,10,10,50,dx,dy+40,dz));
+    addComponent(new RectangularPrism(sIF,PHONG_LEAVES,25,25,40,dx,dy+40,dz));
 
-    addComponent(new RectangularPrism(sIF,PHONG_GRASS,25,35,25,dx,dy+40,dz));
+    addComponent(new RectangularPrism(sIF,PHONG_LEAVES,25,35,25,dx,dy+40,dz));
 }

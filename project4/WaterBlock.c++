@@ -10,6 +10,7 @@ GLuint WaterBlock::indexList[3][4] = {
     { 1, 7, 3, 5 }  // ymax face
 };
 
+float WaterBlock::texOffset = 0.0f;
 WaterBlock::WaterBlock(ShaderIF* sIF, const PhongMaterial& mat, float scaleX, float scaleY, float scaleZ, float dx, float dy, float dz)
     : MyView(sIF, mat)
 {
@@ -57,27 +58,12 @@ void WaterBlock::defineWaterBlock()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4*sizeof(GLuint), indexList[i], GL_STATIC_DRAW);
     }
 
-    vec2 texCoords[]=
-    {
-        {0,0},
-
-        {0,1},
-        {0,0},
-
-        {1.0/10,1},
-        {0,0},
-
-        {1.0/10,0},
-        {0,0},
-
-        {0,0},
-
-    };
-
     glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-    glBufferData(GL_ARRAY_BUFFER, 8*sizeof(vec2), texCoords, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 8*sizeof(vec2), nullptr, GL_STATIC_DRAW);
     glVertexAttribPointer(shaderIF->pvaLoc("texCoords"), 2, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(shaderIF->pvaLoc("texCoords"));
+
+
 
     glDisableVertexAttribArray(shaderIF->pvaLoc("mcNormal"));
 }
@@ -96,6 +82,25 @@ void WaterBlock::getMCBoundingBox(double* xyzLimits) const
 void WaterBlock::renderWaterBlock()
 {
     glBindVertexArray(vao[0]);
+    vec2 texCoords[]=
+    {
+        {0,0},
+
+        {0,1+texOffset},
+        {0,0},
+
+        {1.0/10,1+texOffset},
+        {0,0},
+
+        {1.0/10,0+texOffset},
+        {0,0},
+
+        {0,0+texOffset},
+
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBufferData(GL_ARRAY_BUFFER, 8*sizeof(vec2), texCoords, GL_STATIC_DRAW);
 
     // The three faces that can be drawn with glDrawArrays
     glVertexAttrib3f(shaderIF->pvaLoc("mcNormal"), 0.0, 0.0, 1.0);
@@ -120,6 +125,9 @@ void WaterBlock::renderWaterBlock()
 void WaterBlock::render()
 {
     initRender(VIEW | MATERIAL | LIGHTING | TEXTURE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
     renderWaterBlock();
 

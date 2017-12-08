@@ -27,6 +27,8 @@ public:
     void getMCBoundingBox(double* xyzLimits) const;
     void render();
     virtual void rotate( const cryph::AffPoint& point, const cryph::AffVector& vector, float degrees ){};
+
+    static float texOffset;
 private:
     GLuint vao[1];
     GLuint vbo[2];

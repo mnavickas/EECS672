@@ -121,7 +121,7 @@ vec4 evaluateLightingModel()
 
 		vec3 rHat = normalize(reflect(-liHat,normal));
 
-		if( dot(rHat, vHat) > 0)
+		if( dot(rHat, vHat) > 0 && dot(liHat, normal) > 0 )
 		{
 			specularPart+= (attenuation * ks * strengthLights[i] * pow(dot(rHat,vHat),specular));
 		}

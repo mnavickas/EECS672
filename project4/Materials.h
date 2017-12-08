@@ -18,8 +18,9 @@
 #define PHONG_WALL          PhongMaterial( 0.3,0.3,0.3,                 0.5,0.5,0.5,                    0.3,0.2,0.01,                   15, 1 )
 #define PHONG_FLOOR         PhongMaterial( 0.4,0.4,0.4,                 0.4,0.4,0.4,                    0.6,0.6,0.6,                    20, 1 )
 #define PHONG_GRASS         PhongMaterial( 0.0,0.4,0.0,                 0.0,0.4,0.0,                    0.05,0.05,0.05,                 1, 1 )
+#define PHONG_LEAVES        PhongMaterial( 0.0,0.4,0.0,                 0.0,0.4,0.0,                    0.05,0.05,0.05,                 1, 1 )
 #define PHONG_WATER         PhongMaterial( 0.0,0.1,0.4,                 0.1,0.4,0.7,                    0.4,0.85,0.6,                   15, 1 )
-#define PHONG_FIRE          PhongMaterial( 0.9,0.4,0.0,                 0.9,0.4,0.0,                    0.0,0.0,0.0,                    60, 1 )
-#define PHONG_GLASS         PhongMaterial( 0.9,0.9,0.9,                 0.78,0.78,0.8,                  0.9,0.9,0.9,                    15, 0.3 )
+#define PHONG_FIRE          PhongMaterial( 0.9,0.4,0.0,                 0.9,0.4,0.0,                    0.0,0.0,0.0,                    60, .5 )
+#define PHONG_GLASS         PhongMaterial( 0.9,0.9,0.9,                 0.78,0.78,0.8,                  0.9,0.9,0.9,                    60, 0.3 )
 
 #endif

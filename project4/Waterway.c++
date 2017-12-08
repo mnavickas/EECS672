@@ -6,13 +6,14 @@
 #include "WaterBlock.h"
 #include "Materials.h"
 
-Waterway::Waterway(ShaderIF* sIF, float dx, float dy, float dz)
+Waterway::Waterway(ShaderIF* sIF, Proj4Controller* cont, float dx, float dy, float dz)
     : MyContainer(sIF,PHONG_NONE)
+    , c(cont)
 {
 
-    addComponent(new WaterBlock(sIF,PHONG_WATER,12,2,99,dx,dy-4.9,dz));
-    addComponent(new WaterBlock(sIF,PHONG_WATER,12,2,80,dx-5,dy-4.8,dz+70));
-    addComponent(new WaterBlock(sIF,PHONG_WATER,12,10,3,dx-5,dy-8,dz+110));
+    addComponent(new WaterBlock(sIF,PHONG_WATER,12,2,82,dx,dy-4.9,dz+7));
+    addComponent(new WaterBlock(sIF,PHONG_WATER,12,2,82,dx-5,dy-4.8,dz+70));
+    //addComponent(new WaterBlock(sIF,PHONG_WATER,12,10,3,dx-5,dy-8,dz+110));
 
 
 
@@ -38,12 +39,21 @@ Waterway::Waterway(ShaderIF* sIF, float dx, float dy, float dz)
 
 }
 
+void Waterway::render()
+{
+    MyContainer::render();
+
+    if(!c->useStandardRendering) WaterBlock::texOffset -= 0.001;
+}
+
 
 Waterway::Pool::Pool(ShaderIF* sIF) : MyView(sIF, PHONG_WATER)
 {
     definePool();
     setTextureImage("tex/water.jpg",0);
 }
+
+
 
 void Waterway::Pool::getMCBoundingBox(double* xyzLimits) const
 {

@@ -19,3 +19,15 @@ Campfire::Campfire(ShaderIF* sIF)
 
     addComponent(new Cylinder(sIF,PHONG_FIRE, 5,1.5,Campfire::x,Campfire::y+2,Campfire::z));
 }
+
+void Campfire::render()
+{
+    for( auto it = componentVector.begin(); it != componentVector.end(); ++it)
+    {
+        if( !(*it == componentVector.back() && toggleFire == true) )
+        {
+            (*it)->render();
+        }
+
+    }
+}

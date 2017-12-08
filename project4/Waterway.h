@@ -7,6 +7,7 @@
 
 #include "ObjTypes/MyContainer.h"
 #include "ObjTypes/MyView.h"
+#include "Proj4Controller.h"
 
 class Waterway : public MyContainer
 {
@@ -14,11 +15,15 @@ public:
     Waterway
     (
         ShaderIF* shaderIF,
+        Proj4Controller* c,
         float dx = 0,
         float dy = 0,
         float dz = 0
     );
+    void render();
 private:
+
+    Proj4Controller* c;
     class Pool : public MyView
     {
     public:

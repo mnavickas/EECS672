@@ -16,6 +16,8 @@ public:
     );
 
     static const float x,y,z;
+
+    void render();
 };
 
 #endif

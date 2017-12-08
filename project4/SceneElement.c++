@@ -5,6 +5,7 @@
 #include "Campfire.h"
 
 bool SceneElement::toggleLighting = false;
+bool SceneElement::toggleFire = false;
 
 
 float SceneElement::lightPos[4*MAX_NUM_LIGHTS] =
@@ -72,6 +73,19 @@ void SceneElement::establishLightingEnvironment()
 	else
 	{
 		lightStrength[3] = lightStrength[4] = lightStrength[5] = 0.01;
+	}
+
+	if( toggleFire )
+	{
+		lightStrength[6] = lightStrength[9] = lightStrength[12] = lightStrength[15] = 0.0;
+		lightStrength[7] = lightStrength[10] = lightStrength[13] = lightStrength[16] = 0.0;
+		lightStrength[8] = lightStrength[11] = lightStrength[14] = lightStrength[17] = 0.0;
+	}
+	else
+	{
+		lightStrength[6] = lightStrength[9] = lightStrength[12] = lightStrength[15] = 0.5;
+		lightStrength[7] = lightStrength[10] = lightStrength[13] = lightStrength[16] = 0.3;
+		lightStrength[8] = lightStrength[11] = lightStrength[14] = lightStrength[17] = 0.0;
 	}
 
 
@@ -185,6 +199,10 @@ bool SceneElement::handleCommand(unsigned char anASCIIChar, double ldsX, double 
 		toggleLighting = true;
 	else if( anASCIIChar == 'D')
 		toggleLighting = false;
+	else if (anASCIIChar == 'K')
+		toggleFire = true;
+	else if( anASCIIChar == 'F')
+		toggleFire = false;
 	else
 		return ModelView::handleCommand(anASCIIChar, ldsX, ldsY);
 

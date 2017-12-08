@@ -1,9 +1,12 @@
 #include "Proj4Controller.h"
 #include "ModelView.h"
 #include <stdlib.h>
+#include <chrono>
+#include <thread>
 
 Proj4Controller::Proj4Controller(const std::string& windowTitle, int rcFlags)
     : GLFWController( windowTitle, rcFlags )
+    , useStandardRendering(true)
 {
 
 }
@@ -46,6 +49,64 @@ void Proj4Controller::handleDisplay()
 	glfwSwapBuffers(theWindow);
 
 	checkForErrors(std::cout, "Proj4Controller::handleDisplay");
+}
+
+
+void Proj4Controller::handleAsciiChar(unsigned char theChar, int x, int y)
+{
+    Controller::handleAsciiChar(theChar,x,y);
+
+    if(theChar == 65) //'A'
+    {
+        useStandardRendering = false;
+    }
+    else if( theChar == 90) //'Z'
+    {
+        useStandardRendering = true;
+    }
+
+
+}
+void Proj4Controller::run()
+{
+
+	if (theWindow == nullptr)
+		return;
+
+    auto lastExecuteTime = std::chrono::steady_clock::now();
+    bool inited = false;
+
+	while (!glfwWindowShouldClose(theWindow))
+	{
+        if( useStandardRendering )
+        {
+            glfwWaitEvents();
+            handleDisplay();
+        }
+        else
+        {
+            glfwPollEvents();
+            if( !inited )
+            {
+                handleDisplay();
+                lastExecuteTime = std::chrono::steady_clock::now();
+                inited = true;
+            }
+            else if( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - lastExecuteTime  ) >= std::chrono::milliseconds(1000/30) )
+            {
+                handleDisplay();
+                lastExecuteTime = std::chrono::steady_clock::now();
+            }
+            else
+            {
+                //dont endlessly loop using CPU power
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            }
+        }
+	}
+	glfwDestroyWindow(theWindow);
+	theWindow = nullptr;
+
 }
 
 void Proj4Controller::drawAllObjects()

@@ -130,7 +130,8 @@ int main(int argc, char* argv[])
 
     c.addModel(new Tree(sIF,0,0,100));
 
-    c.addModel(new Waterway(sIF,-70,0,0));
+    //hacking in animation last minute
+    c.addModel(new Waterway(sIF,&c,-70,0,0));
 
     c.addModel( new Campfire(sIF));
     c.addModel(new Window(sIF));
